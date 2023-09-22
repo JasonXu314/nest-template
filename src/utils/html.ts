@@ -1,5 +1,8 @@
 export type Tagger<T = string, E extends unknown[] = any[]> = (strings: TemplateStringsArray, ...expressions: E) => T;
 
+export const INCLUDE_HTMX =
+	'<script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>';
+
 export function join(strings: TemplateStringsArray, expressions: any[]) {
 	return strings
 		.slice(1)
@@ -10,13 +13,13 @@ export function defaultJoiner(strings: TemplateStringsArray, ...expressions: any
 	return join(strings, expressions);
 }
 
-export function page(title: string, head = ''): Tagger {
+export function page(title: string, ...head: string[]): Tagger {
 	return (strings: TemplateStringsArray, ...expressions: any[]) => `
 	<html data-theme="dark">
 		<head>
 			<title>${title}</title>
 			<link rel="stylesheet" href="https://mypico.jasonxu.dev/min"></link>
-			${head}
+			${head.join('\n')}
 			<style>
 			table form {
 				margin-block-end: 0;
