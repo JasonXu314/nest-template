@@ -1,6 +1,6 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Module, Type } from '@nestjs/common';
 
-export const AUTH_DATA_SOURCE = Symbol('AUTH_DATA_SOURCE'),
+export const DATA_SOURCE = Symbol('AUTH_DATA_SOURCE'),
 	PREFIX = Symbol('AUTH_PREFIX');
 
 export abstract class AuthDataSource {
@@ -9,14 +9,18 @@ export abstract class AuthDataSource {
 
 export interface AuthModuleOptions {
 	prefix: string;
+	dataSource: Type<AuthDataSource>;
 }
 
 @Module({})
 export class AuthModule {
-	public static register({ prefix }: AuthModuleOptions): DynamicModule {
+	public static register({ prefix, dataSource }: AuthModuleOptions): DynamicModule {
 		return {
 			module: AuthModule,
-			providers: [{ provide: PREFIX, useValue: prefix }]
+			providers: [
+				{ provide: PREFIX, useValue: prefix },
+				{ provide: DATA_SOURCE, useClass: dataSource }
+			]
 		};
 	}
 }
